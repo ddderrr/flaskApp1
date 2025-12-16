@@ -33,3 +33,5 @@ def lab03_comments():
 
 
     return render_template('lab03/comments.html', comments=comments)
+
+
