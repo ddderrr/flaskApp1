@@ -8,11 +8,13 @@ from urllib.request import urlopen
 from flask import jsonify
 from app import app
 from flask import render_template
+from datetime import datetime
+
+
 def read_web_page(url):
     assert url.startswith("https://")
     with urlopen(url) as res:
         return res.read()
-import time
 
 
 
@@ -43,22 +45,55 @@ def api_weather():
     }
     return json.dumps({"current": current, "next_hr": next_hr}) 
 
+
 @app.route("/hw03/prcp/")
 def hw03_prcp():
-    # construct API URL with lat/lon and date range
-    # fetch data using urlopen
-    # process daily precipitation data
-    # compute day of week for each date
-    # generate trend arrows
-    # assign weekend class
-    # organize by month (columns)
-
-    url3 = "https://historical-forecast-api.open-meteo.com/v1/forecast?latitude=7.0084&longitude=100.4767&start_date=2025-11-01&end_date=2025-12-07&daily=precipitation_sum&hourly=temperature_2m&timezone=Asia%2FBangkok"
-    
+    url3 = "https://historical-forecast-api.open-meteo.com/v1/forecast?latitude=7.0084&longitude=100.4767&start_date=2025-11-01&end_date=2025-12-15&daily=precipitation_sum&hourly=temperature_2m&timezone=Asia%2FBangkok"
     response = read_web_page(url3)
     data = json.loads(response)
-    la = data["latitude"]
-    # assert url3.startswith("https://")
-    # with urlopen(url3) as res:
-    #     return res.read()   
-    return render_template('lab03/hw03_prcp.html', data = ...)
+
+    dates = data["daily"]["time"]
+    prcp  = data["daily"]["precipitation_sum"]
+
+    forecast = [] 
+
+    for i, date_str in enumerate(dates):
+        rain = prcp[i]
+
+        forecast.append({
+            "date": date_str,
+            "prcp": rain
+        })
+
+    months = {}
+
+    for i, date_str in enumerate(dates):
+        date_object = datetime.strptime(date_str, "%Y-%m-%d")
+        date_of_week = date_object.strftime('%a')[:2]
+        month_key = date_object.strftime("%b %Y")
+
+
+        trend = ""
+        if i == 0:
+            trend = ""
+        if i > 0:
+            curr_prcp = prcp[i]
+            prev_prcp = prcp[i-1]
+            if curr_prcp > prev_prcp:
+                trend = "↑"
+            elif curr_prcp < prev_prcp:
+                trend = "↓"
+            elif curr_prcp == prev_prcp:
+                trend = "↔"
+
+        if month_key not in months:
+            months[month_key] = []
+
+        months[month_key].append({
+            "day": f"{date_object.day:02d}",
+            "days": date_of_week,
+            "prcp": prcp[i],
+            "trend": trend
+        })
+        trend_perday = max(len(day) for day in months.values()) if months else 0
+    return render_template('lab03/hw03_prcp.html',months=months, trend_perday=trend_perday, date_of_week = date_of_week)
