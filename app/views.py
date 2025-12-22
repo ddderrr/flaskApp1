@@ -3,7 +3,7 @@ import datetime
 from flask import jsonify, render_template
 from app import app 
 from app import hw_views
-
+from flask import send_from_directory
 
 @app.route("/")
 def home():
@@ -33,5 +33,10 @@ def lab03_comments():
 
 
     return render_template('lab03/comments.html', comments=comments)
+
+
+@app.route('/lab04')
+def lab04_bootstrap():
+    return send_from_directory('static','lab04_bootstrap.html')
 
 
