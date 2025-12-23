@@ -9,7 +9,7 @@ from flask import jsonify
 from app import app
 from flask import render_template
 from datetime import datetime
-
+from flask import send_from_directory
 
 def read_web_page(url):
     assert url.startswith("https://")
@@ -97,3 +97,7 @@ def hw03_prcp():
         })
         trend_perday = max(len(day) for day in months.values()) if months else 0
     return render_template('lab03/hw03_prcp.html',months=months, trend_perday=trend_perday, date_of_week = date_of_week)
+
+@app.route("/hw04")
+def hw04_rwd():
+    return send_from_directory('static','hw04_rwd.html')
