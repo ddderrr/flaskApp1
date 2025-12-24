@@ -101,3 +101,66 @@ def hw03_prcp():
 @app.route("/hw04")
 def hw04_rwd():
     return send_from_directory('static','hw04_rwd.html')
+
+
+@app.route("/hw05/aqicard")
+def hw05_aqicard():
+    token = "dee5632cb96ad0c87e18dee90294c6229ba77ecf"
+    
+    cities_config = [
+        {"url": "chiang-mai", "display_name": "Chiang Mai"},
+        {"url": "ubon-ratchathani", "display_name": "Ubon Ratchathani"},
+        {"url": "phuket", "display_name": "Phuket"},
+        {"url": "bangkok", "display_name": "Bangkok"}
+    ]
+    
+    city_data = []
+    
+    for city_config in cities_config:
+        url = f"https://api.waqi.info/feed/{city_config['url']}/?token={token}"
+        response = read_web_page(url)
+        data = json.loads(response)
+        
+        aqi = data["data"]["aqi"]
+        time = data["data"]["time"]["s"]
+        
+        date_part = time.split()[0]
+        date_obj = datetime.strptime(date_part, "%Y-%m-%d")
+        day = date_obj.strftime("%d %B")
+        year = date_obj.strftime("%Y")
+        
+        if aqi <= 50:
+            status = "Good"
+            bg_class = "bg-green"
+            icon = "good.png"
+            img_class = "img-good"
+        elif aqi <= 100:
+            status = "Moderate"
+            bg_class = "bg-yellow"
+            icon = "moderate.png"
+            img_class = "img-moderate"
+        elif aqi <= 150:
+            status = "Unhealthy for sensitive group"
+            bg_class = "bg-orange"
+            icon = "unhealthy-sensitive.png"
+            img_class = "img-unhealthy"
+        else:
+            status = "Unhealthy"
+            bg_class = "bg-red"
+            icon = "unhealthy.png"
+            img_class = "img-unhealthy2"
+        
+        city_data.append({
+            'name': city_config['display_name'],
+            'aqi': aqi,
+            'date': day,
+            'year': year,
+            'status': status,
+            'bg_class': bg_class,
+            'icon': icon,
+            'img_class': img_class
+        })
+    
+    timestamp = int(datetime.now().timestamp())
+    
+    return render_template('hw05_aqicard.html', cities=city_data, timestamp=timestamp)
