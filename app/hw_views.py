@@ -160,7 +160,7 @@ def hw05_aqicard():
             'icon': icon,
             'img_class': img_class
         })
-    
+        
     timestamp = int(datetime.now().timestamp())
     
     return render_template('hw05_aqicard.html', cities=city_data, timestamp=timestamp)
