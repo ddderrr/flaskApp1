@@ -5,7 +5,7 @@
 
 import json
 from urllib.request import urlopen
-from flask import jsonify
+from flask import jsonify, redirect, url_for
 from app import app
 from flask import render_template
 from datetime import datetime
@@ -15,8 +15,6 @@ def read_web_page(url):
     assert url.startswith("https://")
     with urlopen(url) as res:
         return res.read()
-
-
 
 @app.route("/api/weather")
 def api_weather():
@@ -164,3 +162,15 @@ def hw05_aqicard():
     timestamp = int(datetime.now().timestamp())
     
     return render_template('hw05_aqicard.html', cities=city_data, timestamp=timestamp)
+
+@app.route("/hw06/register/", methods=["GET", "POST"])
+def hw06_register():
+    form = form.courseForm()    
+    if form.validate_on_submit():
+        username = form.username.data
+        email = form.email.data
+        password = form.password.data      
+        confirm_password = form.confirm_password.data   
+        return redirect(url_for('hw06_users'))
+    return render_template('/hw06_register.html', form=form)
+        

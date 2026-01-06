@@ -2,10 +2,9 @@
 import datetime
 from flask import jsonify, render_template
 from flask import send_from_directory
-
+from app import app
 import json 
-from app import app 
-# from app import hw_views
+from app import hw_views
 from flask import (jsonify, render_template,
                    request, url_for, flash, redirect)
 
@@ -102,3 +101,9 @@ def lab06_courses():
     raw_json = read_file('app/data/course_list.json')
     course_list = json.loads(raw_json)
     return render_template('lab06/courses.html', course_list=course_list)
+
+@app.route('/hw06/users/')
+def hw06_users():
+    raw_json = read_file('app/data/users.json')
+    users = json.loads(raw_json)
+    return render_template('hw06/hw06_users.html', users=users)
