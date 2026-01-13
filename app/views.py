@@ -112,3 +112,16 @@ def lab07_form_validatio():
 @app.route('/lab07b')
 def lab07b():
     return send_from_directory('static', 'lab07b.html')
+
+
+@app.route('/lab08a')
+def lab08a():
+    return send_from_directory('static', 'lab08a.html')
+
+@app.route('/lab08b')
+def lab08b():
+    return send_from_directory('static', 'lab08b.html')
+
+@app.route('/lab08c')
+def lab08c():
+    return send_from_directory('static', 'lab08c.html')
