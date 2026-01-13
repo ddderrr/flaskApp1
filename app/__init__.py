@@ -1,6 +1,4 @@
 from flask import Flask, request, redirect
-from app import views
-
 app = Flask(__name__, static_folder='static')
 app.url_map.strict_slashes = False
 
@@ -26,3 +24,4 @@ def remove_trailing_slash():
     if request.path != '/' and request.path.endswith('/'):
         return redirect(request.path[:-1], code=308)
 
+from app import views, hw_views

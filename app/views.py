@@ -4,9 +4,9 @@ from flask import jsonify, render_template
 from flask import send_from_directory
 from app import app
 import json 
-from app import hw_views
 from flask import (jsonify, render_template,
                    request, url_for, flash, redirect)
+from app.forms.forms import CourseForm, RegistrationForm
 
 @app.route("/")
 def home():
@@ -75,13 +75,9 @@ def lab03_create():
 
     return render_template('lab03/create.html')
 
-
-from app.forms import forms
-
-
 @app.route('/lab06/', methods=('GET', 'POST'))
 def lab06_index():
-    form = forms.CourseForm()
+    form = CourseForm()
     if form.validate_on_submit():
         raw_json = read_file('app/data/course_list.json')
         course_list = json.loads(raw_json)
@@ -106,4 +102,13 @@ def lab06_courses():
 def hw06_users():
     raw_json = read_file('app/data/users.json')
     users = json.loads(raw_json)
-    return render_template('hw06/hw06_users.html', users=users)
+    return render_template('hw06_users.html', users=users)
+
+
+@app.route('/lab07')
+def lab07_form_validatio():
+    return send_from_directory('static', 'lab07_form_validation.html')
+
+@app.route('/lab07b')
+def lab07b():
+    return send_from_directory('static', 'lab07b.html')

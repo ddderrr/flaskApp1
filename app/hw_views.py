@@ -5,11 +5,14 @@
 
 import json
 from urllib.request import urlopen
-from flask import jsonify, redirect, url_for
+from flask import jsonify, redirect, url_for, render_template, render_template
 from app import app
-from flask import render_template
 from datetime import datetime
-from flask import send_from_directory
+from app.forms.forms import CourseForm, RegistrationForm
+
+# @app.route("/")
+# def home():
+#     return "Flask says 'Hello world!'"
 
 def read_web_page(url):
     assert url.startswith("https://")
@@ -163,14 +166,20 @@ def hw05_aqicard():
     
     return render_template('hw05_aqicard.html', cities=city_data, timestamp=timestamp)
 
-@app.route("/hw06/register/", methods=["GET", "POST"])
+@app.route("/hw06/register", methods=["GET", "POST"])
 def hw06_register():
-    form = form.courseForm()    
+    form = RegistrationForm()    
     if form.validate_on_submit():
         username = form.username.data
         email = form.email.data
         password = form.password.data      
         confirm_password = form.confirm_password.data   
         return redirect(url_for('hw06_users'))
-    return render_template('/hw06_register.html', form=form)
-        
+    return render_template('lab06/hw06_register.html', form=form)
+
+def write_file(filename, contents, mode="wt"):
+    with open(filename, mode, encoding="utf-8") as fout:
+        fout.write(contents)        
+def read_file(filename, mode="rt"):
+    with open(filename, mode, encoding='utf-8') as fin:
+        return fin.read()   

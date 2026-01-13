@@ -16,8 +16,8 @@ class CourseForm(FlaskForm):
                        validators=[InputRequired()])
     available = BooleanField('Available', default='checked')
     
-
-    username = StringField('Username', validators=[InputRequired(), Length(min=1, max=10)])
-    email = EmailField('Email', validators=[InputRequired(), Email(), KeyError('Invalid EMail')])
-    password = PasswordField('Password', validators=[InputRequired(), Regexp(), KeyError('Password Must contain at least one character')])
-    confirm_password = PasswordField('Confirm Password', validators=[InputRequired(), EqualTo(), KeyError('Password Must match')])  
+class RegistrationForm(FlaskForm):
+    username = StringField('Username', validators=[InputRequired(),Length(min=4, max=20)])
+    email = EmailField('Email', validators=[InputRequired(), Email(message='Invalid Email')])
+    password = PasswordField('Password', validators=[InputRequired(),Length(min=6,message='Password must contain at least one number'),Regexp(r'^(?=.*\d)', message='Password must contain at least one letter and one number')])
+    confirm_password = PasswordField('Confirm Password',validators=[InputRequired(),EqualTo('password', message='Passwords must match')])
