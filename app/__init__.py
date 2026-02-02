@@ -16,6 +16,8 @@ app.config['DEBUG'] = True
 app.config['SECRET_KEY'] = \
     '31678f0726e0a354a91f29a4d2a7cb5a71ac0b746957bb95'
 
+app.config['JSON_AS_ASCII'] = False
+
 
 
 @app.before_request
