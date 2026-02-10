@@ -25,4 +25,3 @@ def remove_trailing_slash():
         return redirect(request.path[:-1], code=308)
     
 from app import views 
-from app import hw_views 

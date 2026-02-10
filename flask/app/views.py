@@ -4,8 +4,8 @@ from flask import (jsonify, render_template,
 
 from sqlalchemy.sql import text
 from app import app
-from app import db
-from app.models.contact import Contact
+# from app import db
+# from app.models.contact import Contact
 # from urllib.request import urlopen
 # from urllib.parse import quote
 # import os

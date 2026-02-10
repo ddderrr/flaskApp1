@@ -203,3 +203,5 @@ def anivault_api_rate():
                                  'message': 'Rating updated!'}), 200
    """
    pass
+
+
