@@ -1,4 +1,4 @@
-import json
+# import json
 from flask import (jsonify, render_template,
                    request, url_for, flash, redirect)
 
@@ -6,15 +6,19 @@ from sqlalchemy.sql import text
 from app import app
 from app import db
 from app.models.contact import Contact
+# from urllib.request import urlopen
+# from urllib.parse import quote
+# import os
 
-
-
+DEBUG = False
 
 @app.route('/')
 def home():
     return "Flask says 'Hello world!'"
 
-
+@app.route('/crash')
+def crash():
+    return 1/0
 
 @app.route('/db')
 def db_connection():
@@ -24,15 +28,14 @@ def db_connection():
         return '<h1>db works.</h1>'
     except Exception as e:
         return '<h1>db is broken.</h1>' + str(e)
-    
-    
+
 @app.route('/lab04')
 def lab04_bootstrap():
     return app.send_static_file('lab04_bootstrap.html')
 
-@app.route('/crash')
-def crash():
-    return 1/0
+# @app.route('/lab10')
+# def lab10_phonebook():
+#     return app.send_static_file('lab10_phonebook.html')
 
 @app.route("/lab10/contacts")
 def lab10_db_contacts():
@@ -104,6 +107,7 @@ def lab10_phonebook():
 
 
     return app.send_static_file('lab10_phonebook.html')
+
 
 @app.route('/lab10/remove_contact', methods=('GET', 'POST'))
 def lab10_remove_contacts():
