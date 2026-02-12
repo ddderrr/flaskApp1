@@ -17,9 +17,14 @@
 </head>
 
 <body>
+    <!-- เพิ่มส่วนนี้ -->
     <div id="header" class="container">
-        <h1>Phonebook</h1>
+        <div class="box3">
+            <button id="logout" type="button">Logout</button>
+        </div>
+        <h1>{{ current_user.name }}'s Phonebook</h1>
     </div>
+
     <div id="add-edit" class="container" hidden="hidden">
         <h2 id="add-edit-caption">Add/Edit a Contact:</h2>
         <form id="addPhoneNumberForm">
@@ -43,29 +48,19 @@
             <thead>
                 <tr>
                     <th data-field="id">
-                        <span class="text-success">
-                            id
-                        </span>
+                        <span class="text-success">id</span>
                     </th>
                     <th data-field="firstname">
-                        <span class="text-success">
-                            ชื่อ
-                        </span>
+                        <span class="text-success">ชื่อ</span>
                     </th>
                     <th data-field="lastname">
-                        <span class="text-success">
-                            นามสกุล
-                        </span>
+                        <span class="text-success">นามสกุล</span>
                     </th>
                     <th data-field="phone">
-                        <span class="text-success">
-                            โทรศัพท์
-                        </span>
+                        <span class="text-success">โทรศัพท์</span>
                     </th>
                     <th data-field="operation" data-formatter="actionFormatter" data-events="operateEvents">
-                        <span class="text-success">
-                            แก้ไข/ลบ
-                        </span>
+                        <span class="text-success">แก้ไข/ลบ</span>
                     </th>
                 </tr>
             </thead>
@@ -79,25 +74,18 @@
             $('#phonebook-table').bootstrapTable('hideColumn', 'id');
         }
 
-
-
         $(document).ready(function () {
             (function () {
                 $.getJSON("lab10/contacts", populate_table);
             })();
         });
-        // refresh the table after a read update
+
         function refresh_table(contact_data) {
             $('#phonebook-table').bootstrapTable('load', contact_data);
         }
 
-
         $("#addPhoneNumberForm").submit(function (event) {
-            // prevent default html form submission action
             event.preventDefault();
-
-
-            // pack the inputs into a dictionary
             var formData = {};
             $(":input").each(function () {
                 var key = $(this).attr('name');
@@ -106,19 +94,13 @@
                     formData[key] = val;
                 }
             });
-
-
             var $form = $(this);
             var url = $form.attr("action");
-
-
-            // make a POST call to the back end w/ a callback to refresh the table
             $.post(url, formData, function (contact_data) {
                 refresh_table(contact_data);
                 clearForm();
             });
         });
-
 
         function clearForm() {
             $('#addPhoneNumberForm')[0].reset();
@@ -135,6 +117,7 @@
                 '</a>'
             ].join('')
         }
+
         window.operateEvents = {
             'click .edit': function (e, value, row, index) {
                 prePopulateForm(row);
@@ -144,15 +127,14 @@
             }
         }
 
-
         function prePopulateForm(row) {
             $('#addPhoneNumberForm')[0].reset();
             $('#firstname').val(row.firstname);
             $('#lastname').val(row.lastname);
             $('#phone').val(row.phone);
             $('#entryid').val(row.id);
-
         }
+
         function removeItem(row) {
             if (!confirm("Delete " + row.firstname + ' ' + row.lastname + '?')) {
                 return false;
@@ -163,6 +145,7 @@
                 refresh_table(contact_data);
             });
         }
+
         function toggleView() {
             if ($('#contact_display').attr('hidden')) {
                 $('#contact_display').removeAttr('hidden');
@@ -172,18 +155,24 @@
                 $('#add-edit').removeAttr('hidden');
             }
         }
+
         $("#add_contact").click(function () {
             clearForm();
             toggleView();
         });
+
         $("#clear_form").click(function () {
             clearForm();
         });
 
-
         $("#cancel_form").click(function () {
             clearForm();
             toggleView();
+        });
+
+        $("#logout").click(function () {
+            clearForm();
+            window.location.href = "lab11/logout";
         });
 
     </script>
