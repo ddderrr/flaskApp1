@@ -4,10 +4,11 @@ from flask import (jsonify, render_template, request)
 import json
 from urllib.request import urlopen
 from urllib.parse import quote
-
+from flask_login import login_required
 DEBUG = False
 
 @app.route('/anivault')
+@login_required
 def anivault_mylist():
     return render_template('anivault/index.html', active_tab='search')
 
