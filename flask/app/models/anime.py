@@ -1,12 +1,17 @@
 from app import db
+from app.models.authuser import AuthUser
 from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime
 
 
+
+
 anime_genres = db.Table('anime_genres',
-   db.Column('anime_id', db.Integer, db.ForeignKey('animes.id'), primary_key=True),
-   db.Column('genre_id', db.Integer, db.ForeignKey('genres.id'), primary_key=True)
-)
+                       db.Column('anime_id', db.Integer, db.ForeignKey(
+                           'animes.id'), primary_key=True),
+                       db.Column('genre_id', db.Integer, db.ForeignKey(
+                           'genres.id'), primary_key=True)
+                       )
 
 
 
@@ -30,16 +35,38 @@ class Genre(db.Model, SerializerMixin):
 class Anime(db.Model, SerializerMixin):
    __tablename__ = 'animes'
    id = db.Column(db.Integer, primary_key=True)
-   mal_id = db.Column(db.Integer, unique=True)
+
+
+   # ---------------START EDIT-------------------
+   __table_args__ = (
+       db.UniqueConstraint('owner_id', 'mal_id', name='_user_anime_uc'),
+   )
+   # ---------------END EDIT---------------------
+   # ---------------START EDIT-------------------
+   # mal_id = db.Column(db.Integer, unique=True)
+   # Removing unique=True to allow multiple users to have same anime
+   mal_id = db.Column(db.Integer)
+   # ---------------END EDIT---------------------
+
+
    title_english = db.Column(db.String(255))
    image_url = db.Column(db.String(512))
    year = db.Column(db.Integer)
    episodes = db.Column(db.Integer)
    synopsis = db.Column(db.Text)
    score = db.Column(db.Float)
+
+
+   # ---------------START EDIT-------------------
+   # New column for user association
+   owner_id = db.Column(db.Integer, db.ForeignKey('auth_users.id'))
+   # ---------------END EDIT---------------------
+
+
    my_rating = db.Column(db.Integer, default=0)
    deleted_at = db.Column(db.DateTime, nullable=True)
-  
+
+
    # Many-to-Many relationship
    genres = db.relationship('Genre', secondary=anime_genres,
                             backref=db.backref('animes', lazy='dynamic'))
@@ -49,8 +76,9 @@ class Anime(db.Model, SerializerMixin):
    serialize_rules = ('-genres',)
 
 
-   def __init__(self, mal_id, title_english, image_url, year, 
-                episodes, synopsis, score, my_rating=0, deleted_at=None):
+   def __init__(self, mal_id, title_english, image_url, year, episodes,
+                synopsis, score, owner_id=None, my_rating=0,
+                deleted_at=None):
        self.mal_id = mal_id
        self.title_english = title_english
        self.image_url = image_url
@@ -58,14 +86,16 @@ class Anime(db.Model, SerializerMixin):
        self.episodes = episodes
        self.synopsis = synopsis
        self.score = score
+       # ---------------START EDIT-------------------
+       self.owner_id = owner_id
+       # ---------------END EDIT---------------------
        self.my_rating = my_rating
        self.deleted_at = deleted_at
 
 
    def to_dict(self, rules=None, **kwargs):
-       # Override to_dict to return genres as a simple list of strings 
+       # Override to_dict to return genres as a simple list of strings
        # (matching JSON format)
        d = super().to_dict(rules=rules, **kwargs)
        d['genres'] = [g.name for g in self.genres]
        return d
-

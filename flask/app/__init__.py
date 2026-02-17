@@ -1,8 +1,10 @@
 import os
 from flask import Flask, request, redirect
+from flask_wtf.csrf import CSRFProtect
 from werkzeug.debug import DebuggedApplication
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from authlib.integrations.flask_client import OAuth
 
 app = Flask(__name__, static_folder='static')
 app.url_map.strict_slashes = False
