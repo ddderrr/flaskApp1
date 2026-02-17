@@ -42,5 +42,6 @@ def remove_trailing_slash():
     if request.path != '/' and request.path.endswith('/'):
         return redirect(request.path[:-1], code=301)
 
-from app import hw_views
+# from app import hw_views
 from app import views  # noqa
+# from app import hw_views

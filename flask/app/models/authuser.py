@@ -35,7 +35,7 @@ class AuthUser(db.Model, UserMixin, SerializerMixin):
        self.username = username
        # ---------------END EDIT---------------------
 
-
+    
    def update(self, email, name, avatar_url):
        self.email = email
        self.name = name
